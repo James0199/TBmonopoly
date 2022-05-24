@@ -12,17 +12,6 @@ class stats:
         self.doubles = doubles
 
 
-# not ready!
-class property:
-    def __init__(self, name, color, type, rent, houses, owner):
-        self.name = name
-        self.color = color
-        self.type = type
-        self.rent = rent
-        self.houses = houses
-        self.owner = owner
-
-
 player = {}
 for count in range(1, 7):
     player.update({count: stats(0, 1500, False, False, 0)})
@@ -33,6 +22,7 @@ if players > 8:
 if players < 2:
     players = 1
 current = 1
+
 # community chest
 comChest = {"go": "Advance to Go\n(Collect $200)",
             "bank": "Bank error in your favor\nCollect $200",
@@ -85,8 +75,8 @@ chance = {"go": "Advance to Go\n(Collect $200)",
 chanceCard = ["go", "broadwalk", "illinois", "charles", "reading", "railroad", "utility", "back3", "bank", "mature",
               "poor", "chairman", "repairs", "jail", "jailFree"]
 # properties
-propertyLoc = {0:"Go",
-              1: {"name":"Mediterranean Avenue"},
+properties = {0: "Go",
+              1: "Mediterranean Avenue",
               2: "Community Chest",
               3: "Baltic Avenue",
               4: "Income Tax",
@@ -130,7 +120,7 @@ while True:
     sleep(2)
     # player stats
     print("\n\nplayer", current, "turn")
-    print("location:", player[current].location, "-", propertyLoc[player[current].location]["name"],
+    print("location:", player[current].location, "-", properties[player[current].location],
           "\nbalance:", player[current].balance)
     sleep(1)
 
