@@ -1,2 +1,2 @@
 # Text-based monopoly
-Just a little project.
+Re-creation of monopoly in python
