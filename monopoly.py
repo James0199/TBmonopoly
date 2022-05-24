@@ -1,9 +1,11 @@
+# monopoly
 from random import randint
 from time import sleep
 
 
 class stats:
-    def __init__(self, location, balance, jail, jailFree, doubles, ownedRR, ownedUT):
+    def __init__(self, location, balance, jail, jailFree, doubles, ownedRR, ownedUT, bankrupt):
+        self.bankrupt = bankrupt
         self.location = location
         self.balance = balance
         self.jailFree = jailFree
@@ -17,9 +19,9 @@ class stats:
 player = {}
 for count in range(0, 7):
     if count == 0:
-        player.update({count: stats(0, 0, False, False, 0, [], [])})
+        player.update({count: stats(0, 0, False, False, 0, [], [], False)})
     else:
-        player.update({count: stats(0, 1500, False, False, 0, [], [])})
+        player.update({count: stats(0, 1500, False, False, 0, [], [], False)})
 # select number of players
 players = int(input("Number of players: "))
 if players > 8:
@@ -80,29 +82,29 @@ chance = {"go": "Advance to Go\n(Collect $200)",
 chanceCard = ["go", "broadwalk", "illinois", "charles", "reading", "railroad", "utility", "back3", "bank", "mature",
               "poor", "chairman", "repairs", "jail", "jailFree"]
 # properties
-properties = {0: {"name": "Go", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+properties = {0: {"name": "Go", "price": 0, "rent": 0, "color": "none", "type": "corner", "owner": "none"},
               1: {"name": "Mediterranean Avenue", "price": 60, "rent": 2, "color": "brown", "type": "property", "owner": "none"},
-              2: {"name": "Community Chest", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              2: {"name": "Community Chest", "price": 0, "rent": 0, "color": "none", "type": "community", "owner": "none"},
               3: {"name": "Baltic Avenue", "price": 60, "rent": 4, "color": "brown", "type": "property", "owner": "none"},
-              4: {"name": "Income Tax", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              4: {"name": "Income Tax", "price": 0, "rent": 0, "color": "none", "type": "tax", "owner": "none"},
               5: {"name": "Reading Railroad", "price": 200, "rent": 25, "color": "none", "type": "railroad", "owner": "none"},
               6: {"name": "Oriental Avenue", "price": 100, "rent": 6, "color": "blue", "type": "property", "owner": "none"},
-              7: {"name": "Chance", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              7: {"name": "Chance", "price": 0, "rent": 0, "color": "none", "type": "chance", "owner": "none"},
               8: {"name": "Vermont Avenue", "price": 100, "rent": 6, "color": "blue", "type": "property", "owner": "none"},
               9: {"name": "Connecticut Avenue", "price": 120, "rent": 8, "color": "blue", "type": "property", "owner": "none"},
-              10: {"name": "Just Visiting", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              10: {"name": "Just Visiting", "price": 0, "rent": 0, "color": "none", "type": "corner", "owner": "none"},
               11: {"name": "St. Charles Place", "price": 140, "rent": 10, "color": "pink", "type": "property", "owner": "none"},
               12: {"name": "Electric Company", "price": 150, "rent": 0, "color": "none", "type": "utility", "owner": "none"},
               13: {"name": "States Avenue", "price": 140, "rent": 10, "color": "pink", "type": "property", "owner": "none"},
               14: {"name": "Virginia Avenue", "price": 160, "rent": 12, "color": "pink", "type": "property", "owner": "none"},
               15: {"name": "Pennsylvania Railroad", "price": 200, "rent": 25, "color": "none", "type": "railroad", "owner": "none"},
               16: {"name": "St. James Place", "price": 180, "rent": 14, "color": "orange", "type": "property", "owner": "none"},
-              17: {"name": "Community Chest", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              17: {"name": "Community Chest", "price": 0, "rent": 0, "color": "none", "type": "community", "owner": "none"},
               18: {"name": "Tennessee Avenue", "price": 180, "rent": 14, "color": "orange", "type": "property", "owner": "none"},
               19: {"name": "New York Avenue", "price": 200, "rent": 16, "color": "orange", "type": "property", "owner": "none"},
-              20: {"name": "Free Parking", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              20: {"name": "Free Parking", "price": 0, "rent": 0, "color": "none", "type": "corner", "owner": "none"},
               21: {"name": "Kentucky Avenue", "price": 220, "rent": 18, "color": "red", "type": "property", "owner": "none"},
-              22: {"name": "Chance", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              22: {"name": "Chance", "price": 0, "rent": 0, "color": "none", "type": "chance", "owner": "none"},
               23: {"name": "Indiana Avenue", "price": 220, "rent": 18, "color": "red", "type": "property", "owner": "none"},
               24: {"name": "Illinois Avenue", "price": 240, "rent": 20, "color": "red", "type": "property", "owner": "none"},
               25: {"name": "B. & O. Railroad", "price": 200, "rent": 25, "color": "none", "type": "railroad", "owner": "none"},
@@ -110,34 +112,39 @@ properties = {0: {"name": "Go", "price": 0, "rent": 0, "color": "none", "type": 
               27: {"name": "Ventnor Avenue", "price": 260, "rent": 22, "color": "yellow", "type": "property", "owner": "none"},
               28: {"name": "Water Works", "price": 150, "rent": 0, "color": "none", "type": "utility", "owner": "none"},
               29: {"name": "Marvin Gardens", "price": 280, "rent": 24, "color": "yellow", "type": "property", "owner": "none"},
-              30: {"name": "Go To Jail", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              30: {"name": "Go To Jail", "price": 0, "rent": 0, "color": "none", "type": "corner", "owner": "none"},
               31: {"name": "Pacific Avenue", "price": 300, "rent": 26, "color": "green", "type": "property", "owner": "none"},
               32: {"name": "North Carolina Avenue", "price": 300, "rent": 26, "color": "green", "type": "property", "owner": "none"},
-              33: {"name": "Community Chest", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              33: {"name": "Community Chest", "price": 0, "rent": 0, "color": "none", "type": "community", "owner": "none"},
               34: {"name": "Pennsylvania Avenue", "price": 320, "rent": 28, "color": "green", "type": "property", "owner": "none"},
               35: {"name": "Short Line", "price": 200, "rent": 25, "color": "none", "type": "railroad", "owner": "none"},
-              36: {"name": "Chance", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              36: {"name": "Chance", "price": 0, "rent": 0, "color": "none", "type": "chance", "owner": "none"},
               37: {"name": "Park Place", "price": 350, "rent": 35, "color": "dark blue", "type": "property", "owner": "none"},
-              38: {"name": "Luxury Tax", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              38: {"name": "Luxury Tax", "price": 0, "rent": 0, "color": "none", "type": "tax", "owner": "none"},
               39: {"name": "Boardwalk", "price": 400, "rent": 50, "color": "dark blue", "type": "property", "owner": "none"}}
-propertiesList = (1, 3, 6, 8, 9, 11, 13, 14, 16, 18, 19, 21, 23, 24, 26, 27, 29, 31, 32, 34, 35, 37, 39)
-propertiesColor = ("brown", "blue", "pink", "orange", "red", "yellow", "green", "dark blue")
-propertiesType = ("property", "railroad", "utility")
-ownedRR = {5: "none", 15: "none", 25: "none", 35: "none"}
 
 while True:
     sleep(2)
     # bug, first turn does not work properly
-    if current != 0:
+    if current == 0:
+        current += 1
+        continue
+    elif player[current].bankrupt:
+        current += 1
+        continue
+    else:
         # player stats
         print("\n\nplayer", current, "turn")
         print("location:", player[current].location, "-", properties[player[current].location]["name"],
               "\nbalance:", player[current].balance)
-        sleep(1)
-    elif current == 0:
-        print("initializing....")
+        sleep(2)
 
-    if not player[current].jail and current != 0:
+    # bankruptcy
+    if player[current].balance <= 0:
+        player[current].bankrupt = True
+        print("player", current, "bankrupt")
+
+    if not player[current].jail:
         # dice roll
         roll1 = randint(1, 6)
         roll2 = randint(1, 6)
@@ -270,6 +277,7 @@ while True:
         elif comChestCard[comChestDraw] == "doctor":
             player[current].balance -= 50
         elif comChestCard[comChestDraw] == "repairs":
+            # houses and hotels required
             pass
         elif comChestCard[comChestDraw] == "contest":
             player[current].balance += 10
@@ -302,9 +310,48 @@ while True:
                 player[current].balance += 200
             player[current].location = 5
         elif chanceCard[chanceDraw] == "railroad":
-            pass
+            if player[current].location > 5:
+                player[current].location = 15
+            elif player[current].location > 15:
+                player[current].location = 25
+            elif player[current].location > 25:
+                player[current].location = 35
+            elif player[current].location > 35:
+                player[current].location = 5
+            if properties[player[current].location]["owner"] == "none":
+                print("\nunowned railroad")
+                buy = input("buy for " + str(properties[player[current].location]["price"]) + "? " + "[y/(n)]: ")
+                if buy == "y":
+                    player[current].balance -= properties[player[current].location]["price"]
+                    properties[player[current].location]["owner"] = current
+                    player[current].ownedRR.append(player[current].location)
+                    print("\nplayer", current, "bought", properties[player[current].location]["name"])
+                    print("balance:", player[current].balance)
+            elif properties[player[current].location]["owner"] != current:
+                player[current].balance -= properties[player[current].location]["rent"] * 2
+                player[properties[player[current].location]["owner"]].balance += properties[player[current].location]["rent"] * 2
+            sleep(1)
         elif chanceCard[chanceDraw] == "utility":
-            pass
+            if player[current].location > 12:
+                player[current].location = 28
+            elif player[current].location > 28:
+                player[current].location = 12
+            if properties[player[current].location]["owner"] == "none":
+                print("\nunowned utility")
+                buy = input("buy for " + str(properties[player[current].location]["price"]) + "? " + "[y/(n)]: ")
+                if buy == "y":
+                    player[current].balance -= properties[player[current].location]["price"]
+                    properties[player[current].location]["owner"] = current
+                    player[current].ownedUT.append(player[current].location)
+                    print("\nplayer", current, "bought", properties[player[current].location]["name"])
+                    print("balance:", player[current].balance)
+            elif properties[player[current].location]["owner"] != current:
+                roll1 = randint(1, 6)
+                roll2 = randint(1, 6)
+                player[current].balance -= (roll1 + roll2) * 10
+                player[properties[player[current].location]["owner"]].balance += (roll1 + roll2) * 10
+                print("\ndice roll:", roll1, roll2)
+                print("\nplayer", current, "paid rent to player", properties[player[current].location]["owner"])
         elif chanceCard[chanceDraw] == "back3":
             player[current].location -= 3
         elif chanceCard[chanceDraw] == "bank":
@@ -317,6 +364,7 @@ while True:
             for count in range(1, players + 1):
                 player[count].balance += 50
         elif chanceCard[chanceDraw] == "repairs":
+            # houses and hotels required
             pass
         elif chanceCard[chanceDraw] == "jail":
             player[current].jail = True
