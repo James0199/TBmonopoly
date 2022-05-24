@@ -1,27 +1,32 @@
-# monopoly
 from random import randint
 from time import sleep
 
 
 class stats:
-    def __init__(self, location, balance, jail, jailFree, doubles):
+    def __init__(self, location, balance, jail, jailFree, doubles, ownedRR, ownedUT):
         self.location = location
         self.balance = balance
         self.jailFree = jailFree
         self.jail = jail
         self.doubles = doubles
+        self.ownedRR = ownedRR
+        self.ownedUT = ownedUT
 
 
+# set up players
 player = {}
-for count in range(1, 7):
-    player.update({count: stats(0, 1500, False, False, 0)})
+for count in range(0, 7):
+    if count == 0:
+        player.update({count: stats(0, 0, False, False, 0, [], [])})
+    else:
+        player.update({count: stats(0, 1500, False, False, 0, [], [])})
 # select number of players
-players = int(input("Number of players:"))
+players = int(input("Number of players: "))
 if players > 8:
     players = 8
 if players < 2:
-    players = 1
-current = 1
+    players = 2
+current = 0
 
 # community chest
 comChest = {"go": "Advance to Go\n(Collect $200)",
@@ -75,61 +80,70 @@ chance = {"go": "Advance to Go\n(Collect $200)",
 chanceCard = ["go", "broadwalk", "illinois", "charles", "reading", "railroad", "utility", "back3", "bank", "mature",
               "poor", "chairman", "repairs", "jail", "jailFree"]
 # properties
-properties = {0: "Go",
-              1: "Mediterranean Avenue",
-              2: "Community Chest",
-              3: "Baltic Avenue",
-              4: "Income Tax",
-              5: "Reading Railroad",
-              6: "Oriental Avenue",
-              7: "Chance",
-              8: "Vermont Avenue",
-              9: "Connecticut Avenue",
-              10: "Just Visiting",
-              11: "St. Charles Place",
-              12: "Electric Company",
-              13: "States Avenue",
-              14: "Virginia Avenue",
-              15: "Pennsylvania Railroad",
-              16: "St. James Place",
-              17: "Community Chest",
-              18: "Tennessee Avenue",
-              19: "New York Avenue",
-              20: "Free Parking",
-              21: "Kentucky Avenue",
-              22: "Chance",
-              23: "Indiana Avenue",
-              24: "Illinois Avenue",
-              25: "B. & O. Railroad",
-              26: "Atlantic Avenue",
-              27: "Ventnor Avenue",
-              28: "Water Works",
-              29: "Marvin Gardens",
-              30: "Go To Jail",
-              31: "Pacific Avenue",
-              32: "North Carolina Avenue",
-              33: "Community Chest",
-              34: "Pennsylvania Avenue",
-              35: "Short Line",
-              36: "Chance",
-              37: "Park Place",
-              38: "Luxury Tax",
-              39: "Boardwalk"}
+properties = {0: {"name": "Go", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              1: {"name": "Mediterranean Avenue", "price": 60, "rent": 2, "color": "brown", "type": "property", "owner": "none"},
+              2: {"name": "Community Chest", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              3: {"name": "Baltic Avenue", "price": 60, "rent": 4, "color": "brown", "type": "property", "owner": "none"},
+              4: {"name": "Income Tax", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              5: {"name": "Reading Railroad", "price": 200, "rent": 25, "color": "none", "type": "railroad", "owner": "none"},
+              6: {"name": "Oriental Avenue", "price": 100, "rent": 6, "color": "blue", "type": "property", "owner": "none"},
+              7: {"name": "Chance", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              8: {"name": "Vermont Avenue", "price": 100, "rent": 6, "color": "blue", "type": "property", "owner": "none"},
+              9: {"name": "Connecticut Avenue", "price": 120, "rent": 8, "color": "blue", "type": "property", "owner": "none"},
+              10: {"name": "Just Visiting", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              11: {"name": "St. Charles Place", "price": 140, "rent": 10, "color": "pink", "type": "property", "owner": "none"},
+              12: {"name": "Electric Company", "price": 150, "rent": 0, "color": "none", "type": "utility", "owner": "none"},
+              13: {"name": "States Avenue", "price": 140, "rent": 10, "color": "pink", "type": "property", "owner": "none"},
+              14: {"name": "Virginia Avenue", "price": 160, "rent": 12, "color": "pink", "type": "property", "owner": "none"},
+              15: {"name": "Pennsylvania Railroad", "price": 200, "rent": 25, "color": "none", "type": "railroad", "owner": "none"},
+              16: {"name": "St. James Place", "price": 180, "rent": 14, "color": "orange", "type": "property", "owner": "none"},
+              17: {"name": "Community Chest", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              18: {"name": "Tennessee Avenue", "price": 180, "rent": 14, "color": "orange", "type": "property", "owner": "none"},
+              19: {"name": "New York Avenue", "price": 200, "rent": 16, "color": "orange", "type": "property", "owner": "none"},
+              20: {"name": "Free Parking", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              21: {"name": "Kentucky Avenue", "price": 220, "rent": 18, "color": "red", "type": "property", "owner": "none"},
+              22: {"name": "Chance", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              23: {"name": "Indiana Avenue", "price": 220, "rent": 18, "color": "red", "type": "property", "owner": "none"},
+              24: {"name": "Illinois Avenue", "price": 240, "rent": 20, "color": "red", "type": "property", "owner": "none"},
+              25: {"name": "B. & O. Railroad", "price": 200, "rent": 25, "color": "none", "type": "railroad", "owner": "none"},
+              26: {"name": "Atlantic Avenue", "price": 260, "rent": 22, "color": "yellow", "type": "property", "owner": "none"},
+              27: {"name": "Ventnor Avenue", "price": 260, "rent": 22, "color": "yellow", "type": "property", "owner": "none"},
+              28: {"name": "Water Works", "price": 150, "rent": 0, "color": "none", "type": "utility", "owner": "none"},
+              29: {"name": "Marvin Gardens", "price": 280, "rent": 24, "color": "yellow", "type": "property", "owner": "none"},
+              30: {"name": "Go To Jail", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              31: {"name": "Pacific Avenue", "price": 300, "rent": 26, "color": "green", "type": "property", "owner": "none"},
+              32: {"name": "North Carolina Avenue", "price": 300, "rent": 26, "color": "green", "type": "property", "owner": "none"},
+              33: {"name": "Community Chest", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              34: {"name": "Pennsylvania Avenue", "price": 320, "rent": 28, "color": "green", "type": "property", "owner": "none"},
+              35: {"name": "Short Line", "price": 200, "rent": 25, "color": "none", "type": "railroad", "owner": "none"},
+              36: {"name": "Chance", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              37: {"name": "Park Place", "price": 350, "rent": 35, "color": "dark blue", "type": "property", "owner": "none"},
+              38: {"name": "Luxury Tax", "price": 0, "rent": 0, "color": "none", "type": "com/chance", "owner": "none"},
+              39: {"name": "Boardwalk", "price": 400, "rent": 50, "color": "dark blue", "type": "property", "owner": "none"}}
+propertiesList = (1, 3, 6, 8, 9, 11, 13, 14, 16, 18, 19, 21, 23, 24, 26, 27, 29, 31, 32, 34, 35, 37, 39)
+propertiesColor = ("brown", "blue", "pink", "orange", "red", "yellow", "green", "dark blue")
+propertiesType = ("property", "railroad", "utility")
+ownedRR = {5: "none", 15: "none", 25: "none", 35: "none"}
 
 while True:
     sleep(2)
-    # player stats
-    print("\n\nplayer", current, "turn")
-    print("location:", player[current].location, "-", properties[player[current].location],
-          "\nbalance:", player[current].balance)
-    sleep(1)
+    # bug, first turn does not work properly
+    if current != 0:
+        # player stats
+        print("\n\nplayer", current, "turn")
+        print("location:", player[current].location, "-", properties[player[current].location]["name"],
+              "\nbalance:", player[current].balance)
+        sleep(1)
+    elif current == 0:
+        print("initializing....")
 
-    if not player[current].jail:
-        # roll dice
+    if not player[current].jail and current != 0:
+        # dice roll
         roll1 = randint(1, 6)
         roll2 = randint(1, 6)
         player[current].location += + roll1 + roll2
-        print("\ndice roll:", roll1, roll2, "=", roll1 + roll2)
+        print("\ndice roll:", roll1, roll2, "=", roll1 + roll2, "\nlocation:", player[current].location, "-",
+              properties[player[current].location]["name"])
         sleep(1)
         # doubles count, 3 doubles in a row, go to jail
         if roll1 == roll2:
@@ -141,8 +155,87 @@ while True:
         if player[current].location >= 40:
             player[current].location -= 40
             player[current].balance += 200
-            print("\nlocation:", player[current].location)
+            print("\nlocation:", player[current].location, "-", properties[player[current].location]["name"])
             print("passes go, collects $200")
+
+        # properties
+        # if player is on an unowned property, choose to buy or not
+        if properties[player[current].location]["type"] == "property":
+            if properties[player[current].location]["owner"] == "none":
+                print("\nunowned property")
+                buy = input("buy for " + str(properties[player[current].location]["price"]) + "? " + "[y/(n)]: ")
+                if buy == "y":
+                    player[current].balance -= properties[player[current].location]["price"]
+                    properties[player[current].location]["owner"] = current
+                    print("\nplayer", current, "bought", properties[player[current].location]["name"])
+                    print("balance:", player[current].balance)
+                    sleep(1)
+            # if player is on an owned property, pay rent
+            elif properties[player[current].location]["owner"] != current:
+                print("\nowned property")
+                print("pay rent of", properties[player[current].location]["rent"])
+                player[current].balance -= properties[player[current].location]["rent"]
+                player[properties[player[current].location]["owner"]].balance += properties[player[current].location]["rent"]
+                print("\nplayer", current, "paid rent to player", properties[player[current].location]["owner"])
+                print("balance:", player[current].balance)
+                sleep(1)
+
+        # railroads
+        # if player is on an unowned railroad, choose to buy or not
+        elif properties[player[current].location]["type"] == "railroad":
+            if properties[player[current].location]["owner"] == "none":
+                print("\nunowned railroad")
+                buy = input("buy for " + str(properties[player[current].location]["price"]) + "? " + "[y/(n)]: ")
+                if buy == "y":
+                    player[current].balance -= properties[player[current].location]["price"]
+                    properties[player[current].location]["owner"] = current
+                    player[current].ownedRR.append(player[current].location)
+                    properties[player[current].location]["rent"] = 25 * len(player[current].ownedRR)
+                    print("\nplayer", current, "bought", properties[player[current].location]["name"])
+                    print("balance:", player[current].balance)
+                    sleep(1)
+            # if player is on an owned railroad, pay rent
+            elif properties[player[current].location]["owner"] != current:
+                print("\nowned railroad")
+                print("pay rent of", properties[player[current].location]["rent"])
+                player[current].balance -= properties[player[current].location]["rent"]
+                player[properties[player[current].location]["owner"]].balance += properties[player[current].location]["rent"]
+                print("\nplayer", current, "paid rent to player", properties[player[current].location]["owner"])
+                print("balance:", player[current].balance)
+                sleep(1)
+
+        # utilities
+        # if player is on an unowned utility, choose to buy or not
+        elif properties[player[current].location]["type"] == "utility":
+            if properties[player[current].location]["owner"] == "none":
+                print("\nunowned utility")
+                buy = input("buy for " + str(properties[player[current].location]["price"]) + "? " + "[y/(n)]: ")
+                if buy == "y":
+                    player[current].balance -= properties[player[current].location]["price"]
+                    properties[player[current].location]["owner"] = current
+                    player[current].ownedUT.append(player[current].location)
+                    print("\nplayer", current, "bought", properties[player[current].location]["name"])
+                    print("balance:", player[current].balance)
+                    sleep(1)
+
+            # if player is on an owned utility, pay rent
+            elif properties[player[current].location]["owner"] != current:
+                print("\nowned utility")
+                # if one utility is owned, rent is 4 times dice roll
+                if len(player[properties[player[current].location]["owner"]].ownedUT) == 1:
+                    utRent = (roll1 + roll2) * 4
+                    print("pay rent of", utRent)
+                    player[current].balance -= utRent
+                    player[properties[player[current].location]["owner"]].balance += utRent
+                # if both utilities are owned, rent is 10 times dice roll
+                elif len(player[properties[player[current].location]["owner"]].ownedUT) == 2:
+                    utRent = (roll1 + roll2) * 10
+                    print("pay rent of", utRent)
+                    player[current].balance -= utRent
+                    player[properties[player[current].location]["owner"]].balance += utRent
+                print("\nplayer", current, "paid rent to player", properties[player[current].location]["owner"])
+                print("balance:", player[current].balance)
+                sleep(1)
 
         # taxes
     if player[current].location == 4:
@@ -244,7 +337,7 @@ while True:
         print("\nplayer", current, "is in jail")
     # bail choice
     if player[current].jail:
-        bail = input("roll doubles(d) or pay(p) to bail? (d/p/n):")
+        bail = input("roll doubles(d) or pay(p) to bail? [d/p/(n)]: ")
         # roll doubles
         if bail == "d":
             roll1 = randint(1, 6)
@@ -253,14 +346,14 @@ while True:
             if roll1 == roll2:
                 player[current].jail = False
                 player[current].doubles = 0
-                print("\nplayer", current, "bailed")
+                print("\nplayer", current, "bailed\nbalance: ", player[current].balance)
         # pay $50 bail
         if bail == "p":
             player[current].balance -= 50
             player[current].jail = False
             print("\nplayer", current, "bailed")
 
-    # advance to next turn
+    # next turn
     current += 1
     if current > players:
         current = 1
