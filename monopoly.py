@@ -3,8 +3,7 @@ from time import sleep
 
 
 class stats:
-    def __init__(self, location, balance, jail, jailFree, doubles, ownedRR, ownedUT, bankrupt):
-        self.bankrupt = bankrupt
+    def __init__(self, location, balance, jail, jailFree, doubles, ownedRR, ownedUT):
         self.location = location
         self.balance = balance
         self.jailFree = jailFree
@@ -18,9 +17,9 @@ class stats:
 player = {}
 for count in range(0, 7):
     if count == 0:
-        player.update({count: stats(0, 0, False, False, 0, [], [], False)})
+        player.update({count: stats(0, 0, False, False, 0, [], [])})
     else:
-        player.update({count: stats(0, 1500, False, False, 0, [], [], False)})
+        player.update({count: stats(0, 1500, False, False, 0, [], [])})
 # select number of players
 players = int(input("Number of players: "))
 if players > 8:
@@ -33,7 +32,7 @@ flag = False
 # community chest
 comChest = {"go": "Advance to Go\n(Collect $200)",
             "bank": "Bank error in your favor\nCollect $200",
-            "services": "Receive\nfor services $25",
+            "services": "Receive $25\nfor services",
             "opera": "Grand Opera Opening\nCollect $50 from every player\nfor opening night seats",
             "school": "Pay school tax\nof $150",
             "insurance": "Life insurance matures\nCollect $100",
@@ -133,33 +132,33 @@ colors = {"brown": (1, 3),
           "dark blue": (37, 39)}
 
 titleDeeds = {"Mediterranean Avenue": {0: 2, 1: 10, 2: 30, 3: 90, 4: 160, 5: 250},
-              "Baltic Avenue": {0: 4,1: 20, 2: 60, 3: 180, 4: 320, 5: 450},
-              "Oriental Avenue": {0: 6,1: 30, 2: 90, 3: 270, 4: 400, 5: 550},
-              "Vermont Avenue": {0: 6,1: 30, 2: 90, 3: 270, 4: 400, 5: 550},
-              "Connecticut Avenue": {8: 4,1: 40, 2: 100, 3: 300, 4: 450, 5: 600},
-              "St. Charles Place": {0: 10,1: 50, 2: 150, 3: 450, 4: 625, 5: 750},
-              "States Avenue": {0: 4,1: 50, 2: 150, 3: 450, 4: 625, 5: 750},
-              "Virginia Avenue": {0: 4,1: 60, 2: 180, 3: 500, 4: 700, 5: 900},
-              "St. James Place": {0: 4,1: 70, 2: 200, 3: 550, 4: 750, 5: 950},
-              "Tennessee Avenue": {0: 4,1: 70, 2: 200, 3: 550, 4: 750, 5: 950},
-              "New York Avenue": {0: 4,1: 80, 2: 220, 3: 600, 4: 800, 5: 1000},
-              "Kentucky Avenue": {0: 4,1: 90, 2: 250, 3: 700, 4: 875, 5: 1050},
-              "Indiana Avenue": {0: 4,1: 90, 2: 250, 3: 700, 4: 875, 5: 1050},
-              "Illinois Avenue": {0: 4,1: 100, 2: 300, 3: 750, 4: 925, 5: 1100},
-              "Atlantic Avenue": {0: 4,1: 110, 2: 330, 3: 800, 4: 975, 5: 1150},
-              "Ventnor Avenue": {0: 4,1: 120, 2: 360, 3: 850, 4: 1025, 5: 1200},
-              "Marvin Gardens": {0: 4,1: 130, 2: 390, 3: 900, 4: 1100, 5: 1275},
-              "Pacific Avenue": {0: 4,1: 140, 2: 450, 3: 1000, 4: 1200, 5: 1400},
-              "North Carolina Avenue": {0: 4,1: 150, 2: 450, 3: 1000, 4: 1200, 5: 1400},
-              "Pennsylvania Avenue": {0: 4,1: 160, 2: 480, 3: 1100, 4: 1300, 5: 1500},
-              "Park Place": {0: 4,1: 170, 2: 500, 3: 1200, 4: 1400, 5: 1700},
-              "Boardwalk": {0: 4,1: 200, 2: 600, 3: 1400, 4: 1700, 5: 2000}}
+              "Baltic Avenue": {0: 4, 1: 20, 2: 60, 3: 180, 4: 320, 5: 450},
+              "Oriental Avenue": {0: 6, 1: 30, 2: 90, 3: 270, 4: 400, 5: 550},
+              "Vermont Avenue": {0: 6, 1: 30, 2: 90, 3: 270, 4: 400, 5: 550},
+              "Connecticut Avenue": {8: 4, 1: 40, 2: 100, 3: 300, 4: 450, 5: 600},
+              "St. Charles Place": {0: 10, 1: 50, 2: 150, 3: 450, 4: 625, 5: 750},
+              "States Avenue": {0: 4, 1: 50, 2: 150, 3: 450, 4: 625, 5: 750},
+              "Virginia Avenue": {0: 4, 1: 60, 2: 180, 3: 500, 4: 700, 5: 900},
+              "St. James Place": {0: 4, 1: 70, 2: 200, 3: 550, 4: 750, 5: 950},
+              "Tennessee Avenue": {0: 4, 1: 70, 2: 200, 3: 550, 4: 750, 5: 950},
+              "New York Avenue": {0: 4, 1: 80, 2: 220, 3: 600, 4: 800, 5: 1000},
+              "Kentucky Avenue": {0: 4, 1: 90, 2: 250, 3: 700, 4: 875, 5: 1050},
+              "Indiana Avenue": {0: 4, 1: 90, 2: 250, 3: 700, 4: 875, 5: 1050},
+              "Illinois Avenue": {0: 4, 1: 100, 2: 300, 3: 750, 4: 925, 5: 1100},
+              "Atlantic Avenue": {0: 4, 1: 110, 2: 330, 3: 800, 4: 975, 5: 1150},
+              "Ventnor Avenue": {0: 4, 1: 120, 2: 360, 3: 850, 4: 1025, 5: 1200},
+              "Marvin Gardens": {0: 4, 1: 130, 2: 390, 3: 900, 4: 1100, 5: 1275},
+              "Pacific Avenue": {0: 4, 1: 140, 2: 450, 3: 1000, 4: 1200, 5: 1400},
+              "North Carolina Avenue": {0: 4, 1: 150, 2: 450, 3: 1000, 4: 1200, 5: 1400},
+              "Pennsylvania Avenue": {0: 4, 1: 160, 2: 480, 3: 1100, 4: 1300, 5: 1500},
+              "Park Place": {0: 4, 1: 170, 2: 500, 3: 1200, 4: 1400, 5: 1700},
+              "Boardwalk": {0: 4, 1: 200, 2: 600, 3: 1400, 4: 1700, 5: 2000}}
 
 while True:
     if current == 0:
         current += 1
         continue
-    elif player[current].bankrupt:
+    elif player[current].balance <= 0:
         current += 1
         continue
     else:
@@ -168,11 +167,6 @@ while True:
         print("location:", player[current].location, "-", properties[player[current].location]["name"],
               "\nbalance:", player[current].balance)
         sleep(2)
-
-    # bankruptcy
-    if player[current].balance <= 0:
-        player[current].bankrupt = True
-        print("player", current, "bankrupt")
 
     if not player[current].jail:
         # dice roll
