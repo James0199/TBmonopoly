@@ -25,9 +25,10 @@ players = int(input("Number of players: "))
 if players > 8:
     players = 8
 if players < 2:
-    players = 1
+    players = 2
 current = 0
 flag = False
+pLeft = players
 
 # community chest
 comChest = {"go": "Advance to Go\n(Collect $200)",
@@ -160,6 +161,7 @@ while True:
         continue
     elif player[current].balance <= 0:
         current += 1
+        pLeft -= 1
         continue
     else:
         # player stats
@@ -167,6 +169,9 @@ while True:
         print("location:", player[current].location, "-", properties[player[current].location]["name"],
               "\nbalance:", player[current].balance)
         sleep(2)
+    if pLeft == 1:
+        print("\nplayer", current, "wins")
+        exit()
 
     if not player[current].jail:
         # dice roll
