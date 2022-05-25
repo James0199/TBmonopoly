@@ -156,8 +156,6 @@ titleDeeds = {"Mediterranean Avenue": {0: 2, 1: 10, 2: 30, 3: 90, 4: 160, 5: 250
               "Boardwalk": {0: 4,1: 200, 2: 600, 3: 1400, 4: 1700, 5: 2000}}
 
 while True:
-    sleep(2)
-    input("\nturn...")
     if current == 0:
         current += 1
         continue
@@ -292,7 +290,6 @@ while True:
                     player[current].ownedUT.append(player[current].location)
                     print("\nplayer", current, "bought", properties[player[current].location]["name"])
                     print("balance:", player[current].balance)
-                    sleep(1)
 
             # if player is on an owned utility, pay rent
             elif properties[player[current].location]["owner"] != current:
@@ -311,7 +308,6 @@ while True:
                     player[properties[player[current].location]["owner"]].balance += utRent
                 print("\nplayer", current, "paid rent to player", properties[player[current].location]["owner"])
                 print("balance:", player[current].balance)
-                sleep(1)
 
         # taxes
     if player[current].location == 4:
@@ -324,7 +320,7 @@ while True:
     # community chest
     if player[current].location == 2 or player[current].location == 17 or player[current].location == 33:
         comChestDraw = randint(0, 15)
-        print("\nCommunity Chest:\n", comChest[comChestCard[comChestDraw]])
+        print("\nCommunity Chest:\n" + str(comChest[comChestCard[comChestDraw]]))
         sleep(1)
         if comChestCard[comChestDraw] == "go":
             player[current].balance += 200
@@ -363,8 +359,7 @@ while True:
     # chance
     if player[current].location == 7 or player[current].location == 22 or player[current].location == 36:
         chanceDraw = randint(0, 14)
-        print("\nChance:\n", chance[chanceCard[chanceDraw]])
-        sleep(1)
+        print("\nChance:\n" + str(chance[chanceCard[chanceDraw]]))
         if chanceCard[chanceDraw] == "go":
             player[current].balance += 200
         elif chanceCard[chanceDraw] == "broadwalk":
@@ -436,7 +431,7 @@ while True:
         elif chanceCard[chanceDraw] == "repairs":
             for prop in range(0, 40):
                 if properties[prop]["owner"] == current:
-                    player[current].balance -= 25 * properties[prop]["houses"] - 100 * properties[prop]["hotels"]
+                    player[current].balance -= (25 * properties[prop]["houses"] + 100 * properties[prop]["hotels"])
         elif chanceCard[chanceDraw] == "jail":
             player[current].jail = True
         elif chanceCard[chanceDraw] == "jailFree":
@@ -474,6 +469,8 @@ while True:
                 print("\nplayer", current, "does not have \"get out of jail free\"")
 
     # next turn
+    if current > 0:
+        input("\nnext turn...")
     current += 1
     if current > players:
         current = 1
