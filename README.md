@@ -1,2 +1,4 @@
 # Text-based monopoly
-Re-creation of monopoly in python
+Recreation of monopoly in python
+
+(Note that I'm a Python beginner)
